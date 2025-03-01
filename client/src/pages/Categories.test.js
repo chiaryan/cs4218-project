@@ -58,8 +58,23 @@ describe("Categories Component", () => {
     expect(secondLinks[0]).toHaveAttribute("href", "/category/test-category-2");
   });
 
-  test("should render empty state when there are no categories", () => {
+  test("should render empty state when useCategory returns empty list", () => {
     useCategory.mockReturnValue([]);
+
+    render(
+      <MemoryRouter>
+        <Categories />
+      </MemoryRouter>
+    );
+
+    const testCategory = screen.queryAllByText("Test Category 1");
+    expect(testCategory).toHaveLength(0);
+
+    expect(screen.getByText("No categories found")).toBeInTheDocument();
+  });
+
+  test("should render empty state when useCategory returns null", () => {
+    useCategory.mockReturnValue(null);
 
     render(
       <MemoryRouter>
