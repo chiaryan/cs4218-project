@@ -37,15 +37,28 @@ export const updateCategoryController = async (req, res) => {
   try {
     const { name } = req.body;
     const { id } = req.params;
-    const category = await categoryModel.findByIdAndUpdate(
+
+    if (!name) {
+      return res.status(400).send({ message: "Name is required" });
+    }
+
+    const category = await categoryModel.findById(id);
+    if (!category) {
+      return res.status(404).send({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    const updatedCategory = await categoryModel.findByIdAndUpdate(
       id,
       { name, slug: slugify(name, { lower: true }) },
       { new: true }
     );
     res.status(200).send({
       success: true,
-      messsage: "Category Updated Successfully",
-      category,
+      message: "Category Updated Successfully",
+      category: updatedCategory,
     });
   } catch (error) {
     console.log(error);
@@ -80,6 +93,14 @@ export const categoryController = async (req, res) => {
 export const singleCategoryController = async (req, res) => {
   try {
     const category = await categoryModel.findOne({ slug: req.params.slug });
+
+    if (!category) {
+      return res.status(404).send({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
     res.status(200).send({
       success: true,
       message: "Get Single Category Successfully",
@@ -99,6 +120,15 @@ export const singleCategoryController = async (req, res) => {
 export const deleteCategoryController = async (req, res) => {
   try {
     const { id } = req.params;
+
+    const category = await categoryModel.findById(id);
+    if (!category) {
+      return res.status(404).send({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
     await categoryModel.findByIdAndDelete(id);
     res.status(200).send({
       success: true,
