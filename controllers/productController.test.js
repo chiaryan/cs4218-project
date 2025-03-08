@@ -209,16 +209,17 @@ describe('Given createProductController', () => {
     };
   }
 
+
   it('When sent a request to create a product', async () => {
     const req = createDefaultRequest()
     
-    const document = {
+    const returnedDocument = {
       ...req.fields,
       photo: req.files.photo,
       save: jest.fn(),
     }
 
-    productModel.mockReturnValueOnce(document);
+    productModel.mockReturnValueOnce(returnedDocument);
     fs.readFileSync.mockReturnValueOnce('photo data')
 
     await controllers.createProductController(req, res);
@@ -227,12 +228,51 @@ describe('Given createProductController', () => {
     expect(res.send).toHaveBeenCalledWith({
       success: true,
       message: "Product Created Successfully",
-      products: document,
+      products: returnedDocument,
     });
 
   })
 
-  it('When sent as photo with size > 1 MB', async () => {
+  test.each(['fields.name', 'fields.description', 'fields.price', 'fields.category', 'fields.quantity', 
+    'files.shipping'])
+    ('When sent a request missing %s', async (prop) => {
+    const req = createDefaultRequest();
+    const props = prop.split('.');
+
+    // Delete the property
+    {
+      let target = req;
+      for (let i = 0; i < props.length - 1; i++) {
+        target = target[props[i]];
+      }
+      delete target[props[props.length - 1]];
+    }
+
+    await controllers.createProductController(req, res);
+    console.log(res.send.mock.calls)
+
+    expect(res.status).toHaveBeenCalledWith(500);
+
+  });
+
+  test('When sent without photo', async () => {
+    const req = createDefaultRequest();
+    delete req.files.photo;
+
+    
+    const returnedDocument = {
+      ...req.fields,
+      save: jest.fn(),
+    }
+
+    productModel.mockReturnValueOnce(returnedDocument);
+
+    await controllers.createProductController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+  });
+
+  it('When sent a photo with size > 1 MB', async () => {
 
     const req = createDefaultRequest();
     req.files.photo.size = 1000001;
@@ -369,6 +409,8 @@ describe('Given deleteProductController', () => {
       success: true,
       message: "Product Deleted successfully",
     });
+
+    expect(productModel.findByIdAndDelete).toHaveBeenCalled();
 
   })
   
