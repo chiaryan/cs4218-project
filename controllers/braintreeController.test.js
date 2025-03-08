@@ -149,10 +149,14 @@ describe('Given brainTreePaymentController', () => {
     expect(res.json).toHaveBeenCalledWith({ok: true})
   })
 
-  it('When sale() throws', async () => {
+  it('When sale() throws an error', async () => {
     gateway.transaction.sale.mockImplementationOnce(() => {throw 'err';});
     
-    expect(brainTreePaymentController(null, res)).resolves.not.toThrow;
+    await expect(brainTreePaymentController(req, res)).resolves.not.toThrow();
+    
+    expect(gateway.transaction.sale).toHaveBeenCalled();
+    expect(res.send).not.toHaveBeenCalled();
+    expect(res.status).not.toHaveBeenCalled();
   })
 
   it('When callback is called with error', async () => {

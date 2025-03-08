@@ -56,6 +56,22 @@ describe("useCategory hook via TestComponent", () => {
     const items = await waitFor(() => screen.queryAllByTestId("category"));
 
     expect(items).toHaveLength(0);
+    expect(screen.getByText("No categories found")).toBeInTheDocument();
+
+    expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
+  });
+
+  test("fetches and displays categories successfully when null is returned", async () => {
+    const mockCategories = null;
+
+    axios.get.mockResolvedValueOnce({ data: { category: mockCategories } });
+
+    render(<TestComponent />);
+
+    const items = await waitFor(() => screen.queryAllByTestId("category"));
+
+    expect(items).toHaveLength(0);
+    expect(screen.getByText("No categories found")).toBeInTheDocument();
 
     expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
   });

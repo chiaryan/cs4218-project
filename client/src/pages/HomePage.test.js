@@ -64,6 +64,31 @@ const RELATED_PRODUCT_2 = {
   description: 'product desc 2',
   price: 3.00,
 };
+
+const PRODUCT_4 = {
+  _id: 'productid4',
+  category: CATEGORY,
+  name: 'product name 4',
+  description: 'product desc 4',
+  price: 4.00,
+};
+
+const PRODUCT_5 = {
+  _id: 'productid5',
+  category: CATEGORY_2,
+  name: 'product name 5',
+  description: 'product desc 5',
+  price: 5.00,
+};
+
+const PRODUCT_6 = {
+  _id: 'productid6',
+  category: CATEGORY,
+  name: 'product name 6',
+  description: 'product desc 6',
+  price: 6.00,
+};
+
 // mock mapping for axios.get
 let res;
 
@@ -145,7 +170,7 @@ describe('Given HomePage.js', () => {
 
     });
 
-    it.skip('Filters By Category When checkboxes are selected', async () => {
+    it('Filters By Category When checkboxes are selected', async () => {
       axios.get.mockClear();
       const checkbox = screen.getByRole('checkbox', {
         name: 'category name'
@@ -164,7 +189,7 @@ describe('Given HomePage.js', () => {
       })
     });
 
-    it.skip('Filters By Price When radio buttons are selected', async () => {
+    it('Filters By Price When radio buttons are selected', async () => {
       axios.get.mockClear();
       const radio = screen.getByRole('radio', {
         name: '$0 to 19'
@@ -209,14 +234,14 @@ describe('Given HomePage.js', () => {
       await waitFor(() => expect(screen.getByText(CATEGORY.name)).toBeInTheDocument());
     })
     
-    it.skip('renders with a button to load more', async () => {
+    it('renders with a button to load more', async () => {
       expect(screen.getByRole('button', { name: /Loadmore/ })).toBeInTheDocument();
     });
     
-    it.skip('loads 3 more products when the button is clicked', async () => {
+    it('loads 3 more products when the button is clicked', async () => {
       res['/api/v1/product/product-list/2'] = {
         data: {
-          products: [PRODUCT, PRODUCT, PRODUCT]
+          products: [PRODUCT_4, PRODUCT_5, PRODUCT_6]
         }
       };
       const button = screen.getByRole('button', { name: /Loadmore/ });
