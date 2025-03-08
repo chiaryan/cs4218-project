@@ -46,7 +46,7 @@ describe("Category Controller Tests", () => {
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.send).toHaveBeenCalledWith({
-        success: true,
+        success: false,
         message: "Category Already Exists",
       });
     });
