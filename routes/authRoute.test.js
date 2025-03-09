@@ -12,7 +12,6 @@ import {
   getAllOrdersController,
   orderStatusController,
 } from "../controllers/authController";
-import exp from "constants";
 
 const app = express();
 app.use(express.json());
