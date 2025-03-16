@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { useSearch, SearchProvider } from "./search";
+import { act } from "react-dom/test-utils";
 
 const TestComponent = () => {
   const [searchState, setSearchState] = useSearch();
@@ -10,7 +11,12 @@ const TestComponent = () => {
       <p data-testid="keyword">{searchState.keyword}</p>
       <p data-testid="results">{searchState.results.join(", ")}</p>
       <button
-        onClick={() => setSearchState({ keyword: "Search", results: ["Product 1", "Product 2"] })}
+        onClick={() =>
+          setSearchState({
+            keyword: "Search",
+            results: ["Product 1", "Product 2"],
+          })
+        }
       >
         Update Search
       </button>
@@ -40,11 +46,15 @@ describe("SearchProvider", () => {
         </SearchProvider>
       );
 
-      screen.getByText("Update Search").click();
+      act(() => {
+        screen.getByText("Update Search").click();
+      });
 
       await waitFor(() => {
         expect(screen.getByTestId("keyword").textContent).toBe("Search");
-        expect(screen.getByTestId("results").textContent).toBe("Product 1, Product 2");
+        expect(screen.getByTestId("results").textContent).toBe(
+          "Product 1, Product 2"
+        );
       });
     });
   });
@@ -68,7 +78,9 @@ describe("SearchProvider", () => {
         expect(screen.getAllByTestId("keyword")[1].textContent).toBe("");
       });
 
-      screen.getByText("Update Search").click();
+      act(() => {
+        screen.getByText("Update Search").click();
+      });
 
       await waitFor(() => {
         expect(screen.getAllByTestId("keyword")[0].textContent).toBe("Search");
