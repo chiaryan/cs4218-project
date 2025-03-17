@@ -4,6 +4,9 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Products from './Products';
+import { AuthProvider } from '../../context/auth';
+import { CartProvider } from '../../context/cart';
+import { SearchProvider } from '../../context/search';
 import '@testing-library/jest-dom/extend-expect';
 
 // We still need to mock axios for API calls
@@ -31,24 +34,33 @@ jest.mock('../../components/Layout', () => {
 // Create a context wrapper if needed
 // If your app has auth context or other contexts, include them here
 const TestWrapper = ({ children }) => (
-  <MemoryRouter initialEntries={['/dashboard/admin/products']}>
-    <Routes>
-      <Route path="/dashboard/admin/products" element={children} />
-      <Route
-        path="/dashboard/admin/product/:slug"
-        element={<div>Product Detail Page</div>}
-      />
-      <Route
-        path="/dashboard/admin/create-category"
-        element={<div>Create Category Page</div>}
-      />
-      <Route
-        path="/dashboard/admin/create-product"
-        element={<div>Create Product Page</div>}
-      />
-      <Route path="/dashboard/admin/orders" element={<div>Orders Page</div>} />
-    </Routes>
-  </MemoryRouter>
+  <AuthProvider>
+    <CartProvider>
+      <SearchProvider>
+        <MemoryRouter initialEntries={['/dashboard/admin/products']}>
+          <Routes>
+            <Route path="/dashboard/admin/products" element={children} />
+            <Route
+              path="/dashboard/admin/product/:slug"
+              element={<div>Product Detail Page</div>}
+            />
+            <Route
+              path="/dashboard/admin/create-category"
+              element={<div>Create Category Page</div>}
+            />
+            <Route
+              path="/dashboard/admin/create-product"
+              element={<div>Create Product Page</div>}
+            />
+            <Route
+              path="/dashboard/admin/orders"
+              element={<div>Orders Page</div>}
+            />
+          </Routes>
+        </MemoryRouter>
+      </SearchProvider>
+    </CartProvider>
+  </AuthProvider>
 );
 
 describe('Products Component Integration Tests', () => {

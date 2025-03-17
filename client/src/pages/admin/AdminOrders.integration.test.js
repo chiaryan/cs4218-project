@@ -61,6 +61,13 @@ jest.mock('antd', () => {
 // Mock axios for API calls
 jest.mock('axios');
 
+// Mock toast for notifications
+jest.mock('react-hot-toast', () => ({
+  error: jest.fn(),
+  success: jest.fn(),
+  Toaster: () => <div data-testid="mock-toaster" />,
+}));
+
 // Create a wrapper component that provides all necessary contexts
 const TestWrapper = ({ children }) => (
   <AuthProvider>
@@ -343,7 +350,6 @@ describe('AdminOrders Integration Tests', () => {
     axios.put.mockResolvedValueOnce({
       data: { success: false, message: 'Failed to update status' },
     });
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
 
     render(
       <TestWrapper>
@@ -364,12 +370,10 @@ describe('AdminOrders Integration Tests', () => {
     // Change the status
     fireEvent.change(statusDropdowns[0], { target: { value: 'Shipped' } });
 
-    // Verify error is logged
+    // Verify error toast is displayed
     await waitFor(() => {
-      expect(consoleLogSpy).toHaveBeenCalled();
+      expect(toast.error).toHaveBeenCalledWith('Failed to update status');
     });
-
-    consoleLogSpy.mockRestore();
   });
 
   test('handles non-API related failed status update', async () => {
@@ -381,7 +385,6 @@ describe('AdminOrders Integration Tests', () => {
     });
     axios.get.mockResolvedValueOnce({ data: mockOrders });
     axios.put.mockRejectedValueOnce(new Error('Network Error'));
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
 
     render(
       <TestWrapper>
@@ -398,12 +401,12 @@ describe('AdminOrders Integration Tests', () => {
     const statusDropdowns = screen.getAllByRole('combobox');
     fireEvent.change(statusDropdowns[0], { target: { value: 'Shipped' } });
 
-    // Verify error is logged
+    // Verify error is toast is displayed
     await waitFor(() => {
-      expect(consoleLogSpy).toHaveBeenCalled();
+      expect(toast.error).toHaveBeenCalledWith(
+        'Something went wrong in updating status'
+      );
     });
-
-    consoleLogSpy.mockRestore();
   });
 
   test('displays product images correctly with integrated components', async () => {
