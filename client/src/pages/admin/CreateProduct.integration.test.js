@@ -10,6 +10,8 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import CreateProduct from './CreateProduct';
+import { CartProvider } from '../../context/cart';
+import { SearchProvider } from '../../context/search';
 import { AuthProvider } from '../../context/auth';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -23,39 +25,30 @@ jest.mock('react-hot-toast', () => ({
   Toaster: () => <div data-testid="mock-toaster" />,
 }));
 
-// Don't mock AdminMenu - we'll use the real component
-// Only mock Layout lightly for the test structure
-jest.mock('../../components/Layout', () => {
-  return function Layout({ children, title }) {
-    return (
-      <div data-testid="real-layout">
-        {title && <h1 data-testid="layout-title">{title}</h1>}
-        <div className="container-fluid">{children}</div>
-      </div>
-    );
-  };
-});
-
 // Create a router wrapper with necessary routes for navigation testing
 const TestWrapper = ({ children }) => (
   <AuthProvider>
-    <MemoryRouter initialEntries={['/dashboard/admin/create-product']}>
-      <Routes>
-        <Route path="/dashboard/admin/create-product" element={children} />
-        <Route
-          path="/dashboard/admin/products"
-          element={<div>Products Page</div>}
-        />
-        <Route
-          path="/dashboard/admin/create-category"
-          element={<div>Create Category Page</div>}
-        />
-        <Route
-          path="/dashboard/admin/orders"
-          element={<div>Orders Page</div>}
-        />
-      </Routes>
-    </MemoryRouter>
+    <SearchProvider>
+      <CartProvider>
+        <MemoryRouter initialEntries={['/dashboard/admin/create-product']}>
+          <Routes>
+            <Route path="/dashboard/admin/create-product" element={children} />
+            <Route
+              path="/dashboard/admin/products"
+              element={<div>Products Page</div>}
+            />
+            <Route
+              path="/dashboard/admin/create-category"
+              element={<div>Create Category Page</div>}
+            />
+            <Route
+              path="/dashboard/admin/orders"
+              element={<div>Orders Page</div>}
+            />
+          </Routes>
+        </MemoryRouter>
+      </CartProvider>
+    </SearchProvider>
   </AuthProvider>
 );
 
@@ -118,6 +111,12 @@ describe('CreateProduct Integration Tests', () => {
   });
 
   test('should integrate with Layout and AdminMenu components', async () => {
+    axios.get.mockResolvedValueOnce({
+      data: {
+        success: true,
+        category: [{ _id: '1', name: 'Test Category' }],
+      },
+    });
     // Setup for categories API call
     axios.get.mockResolvedValueOnce({
       data: { success: true, category: mockCategories },
@@ -162,6 +161,12 @@ describe('CreateProduct Integration Tests', () => {
   });
 
   test('should integrate with category API to load and display categories', async () => {
+    axios.get.mockResolvedValueOnce({
+      data: {
+        success: true,
+        category: [{ _id: '1', name: 'Test Category' }],
+      },
+    });
     // Setup for categories API call
     axios.get.mockResolvedValueOnce({
       data: { success: true, category: mockCategories },
@@ -360,6 +365,12 @@ describe('CreateProduct Integration Tests', () => {
   });
 
   test('should handle error response when fetching categories', async () => {
+    axios.get.mockResolvedValueOnce({
+      data: {
+        success: true,
+        category: [{ _id: '1', name: 'Test Category' }],
+      },
+    });
     // Mock failed category fetch
     axios.get.mockResolvedValueOnce({
       data: { success: false, message: 'Failed to fetch categories' },
