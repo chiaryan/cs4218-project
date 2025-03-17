@@ -84,20 +84,6 @@ jest.mock('antd', () => {
   return { ...actAntd, Select: mockForSelect };
 });
 
-// Mock the Layout component but keep functionality
-jest.mock('../../components/Layout', () => {
-  return function MockLayout({ children, title }) {
-    return (
-      <div data-testid="layout-component" data-title={title}>
-        <h1>{title}</h1>
-        {children}
-      </div>
-    );
-  };
-});
-
-// DO NOT mock the AdminMenu component - we'll use the real one
-
 describe('UpdateProduct Integration Tests', () => {
   const mockProduct = {
     success: true,
@@ -429,6 +415,12 @@ describe('UpdateProduct Integration Tests', () => {
   });
 
   test('integration: real response time delays', async () => {
+    axios.get.mockResolvedValueOnce({
+      data: {
+        success: true,
+        category: [{ _id: '1', name: 'Test Category' }],
+      },
+    });
     // Setup delayed responses to simulate real network conditions
     axios.get.mockImplementation((url) => {
       if (url.includes('/api/v1/product/get-product/')) {
