@@ -1,3 +1,4 @@
+/** @type {import('jest').Config} */
 export default {
   // name displayed during tests
   displayName: "frontend",
@@ -27,11 +28,12 @@ export default {
 
   // jest code coverage
   collectCoverage: true,
-  collectCoverageFrom: ["client/src/pages/Auth/**"],
+  collectCoverageFrom: ["client/src/**/*.js"],
   coverageThreshold: {
     global: {
       lines: 100,
       functions: 100,
     },
   },
+  coverageDirectory: "<rootDir>/client/coverage"
 };
