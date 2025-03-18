@@ -4,9 +4,15 @@ import CategoryProduct from "./CategoryProduct";
 import axios from "axios";
 import { MemoryRouter } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { useCart } from "../context/cart";
+import toast from "react-hot-toast";
 import "@testing-library/jest-dom/extend-expect";
 
 jest.mock("axios");
+
+jest.mock("../context/cart", () => ({
+  useCart: jest.fn(() => [[], jest.fn()]),
+}));
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
@@ -18,6 +24,10 @@ jest.mock("react-router-dom", () => ({
 jest.mock("../components/Layout", () => ({ children }) => (
   <div>{children}</div>
 ));
+
+jest.mock("react-hot-toast", () => ({
+  success: jest.fn(),
+}));
 
 describe("CategoryProduct component", () => {
   beforeEach(() => {
@@ -140,5 +150,56 @@ describe("CategoryProduct component", () => {
 
     expect(consoleSpy).toHaveBeenCalledWith(error);
     consoleSpy.mockRestore();
+  });
+
+  test("should add a product to the cart when the 'ADD TO CART' button is clicked", async () => {
+    useParams.mockReturnValue({ slug: "test-category" });
+
+    const fakeData = {
+      products: [
+        {
+          _id: "1",
+          name: "Product 1",
+          price: 100,
+          description: "Product 1 description",
+          slug: "product-1",
+        },
+      ],
+      category: { name: "Test Category" },
+    };
+
+    axios.get.mockResolvedValue({ data: fakeData });
+
+    const mockSetCart = jest.fn();
+    useCart.mockReturnValue([[], mockSetCart]);
+
+    render(
+      <MemoryRouter>
+        <CategoryProduct />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith(
+        `/api/v1/product/product-category/test-category`
+      );
+    });
+
+    await waitFor(() => {
+      const addToCartButton = screen.getByText("ADD TO CART");
+      fireEvent.click(addToCartButton);
+    });
+
+    expect(mockSetCart).toHaveBeenCalledWith([
+      {
+        _id: "1",
+        name: "Product 1",
+        price: 100,
+        description: "Product 1 description",
+        slug: "product-1",
+      },
+    ]);
+
+    expect(toast.success).toHaveBeenCalledWith("Item Added to cart");
   });
 });
