@@ -34,7 +34,7 @@ describe("Category Controller Tests", () => {
       expect(res.send).toHaveBeenCalledWith({ message: "Name is required" });
     });
 
-    test("should return status 200 if category already exists", async () => {
+    test("should return status 400 if category already exists", async () => {
       req.body.name = "Test Category";
       categoryModel.findOne.mockResolvedValue({ name: "Test Category" });
 
@@ -44,7 +44,7 @@ describe("Category Controller Tests", () => {
         name: "Test Category",
       });
 
-      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.status).toHaveBeenCalledWith(400);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
         message: "Category Already Exists",

@@ -11,6 +11,7 @@ export const requireSignIn = async (req, res, next) => {
         req.user = decode;
         next();
     } catch (error) {
+        res.status(401).send({ message: "Invalid token" });
         console.log(error);
     }
 };
