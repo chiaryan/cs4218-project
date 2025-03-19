@@ -6,6 +6,7 @@ import { test, expect } from '@playwright/test';
  * having been created in the DB.
  * For the admin user in this test suite, the email is test1@gmail.com and the password is 111111 which is logged in before
  * each test.
+ * In the categories mock data, there are 3 categories already created in the DB, including Electronics, Book, and Clothing.
  * All tests would return the live DB to the state it was before the test suite was run.
  * The test suite first logs in as the admin user, then navigates to the category management page.
  * The test suite then creates a new category, updates the category, and deletes the category.
