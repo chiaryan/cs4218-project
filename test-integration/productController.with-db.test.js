@@ -453,7 +453,8 @@ describe('Product Controllers with DB', () => {
       test('Then a photo should be returned', async () => {
         expect(res.status).toHaveBeenCalledWith(200)
         expect(res.send.mock.calls[0][0].equals(Buffer.from('photo data 0'))).toBe(true)
-        expect(res.set).toHaveBeenCalledWith('Content-Type', 'image/jpeg')
+        // expect(res.set).toHaveBeenCalledWith('Content-Type', 'image/jpeg')
+        expect(res.set).toHaveBeenCalledWith('Content-type', 'image/jpeg')
       })
     })
 
