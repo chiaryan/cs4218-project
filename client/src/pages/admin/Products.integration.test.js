@@ -12,11 +12,8 @@ import '@testing-library/jest-dom/extend-expect';
 // We still need to mock axios for API calls
 jest.mock('axios');
 
-// Mock toast notifications
-jest.mock('react-hot-toast', () => ({
-  error: jest.fn(),
-  success: jest.fn(),
-}));
+jest.spyOn(toast, 'success');
+jest.spyOn(toast, 'error');
 
 // Don't mock AdminMenu - we'll use the real component
 // Only mock Layout lightly for the test structure

@@ -18,12 +18,23 @@ import '@testing-library/jest-dom/extend-expect';
 // Mock axios for API calls
 jest.mock('axios');
 
-// Mock toast notifications
-jest.mock('react-hot-toast', () => ({
-  error: jest.fn(),
-  success: jest.fn(),
-  Toaster: () => <div data-testid="mock-toaster" />,
-}));
+jest.spyOn(toast, 'success');
+jest.spyOn(toast, 'error');
+
+// Mock matchMedia - Add this before any tests are run
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // Deprecated
+    removeListener: jest.fn(), // Deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
 
 // Create a router wrapper with necessary routes for navigation testing
 const TestWrapper = ({ children }) => (

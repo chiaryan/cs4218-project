@@ -19,12 +19,8 @@ import AdminMenu from '../../components/AdminMenu';
 // Mock axios for API calls
 jest.mock('axios');
 
-// Mock toast for notifications
-jest.mock('react-hot-toast', () => ({
-  error: jest.fn(),
-  success: jest.fn(),
-  Toaster: () => <div data-testid="mock-toaster" />,
-}));
+jest.spyOn(toast, 'success');
+jest.spyOn(toast, 'error');
 
 // Mock Layout component with minimal modification to retain title prop functionality
 jest.mock('../../components/Layout', () => {

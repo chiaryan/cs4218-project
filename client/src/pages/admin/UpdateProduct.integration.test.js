@@ -15,12 +15,23 @@ import { CartProvider } from '../../context/cart';
 // Mock axios for API calls
 jest.mock('axios');
 
-// Mock toast notifications
-jest.mock('react-hot-toast', () => ({
-  error: jest.fn(),
-  success: jest.fn(),
-  Toaster: () => <div data-testid="mock-toaster" />,
-}));
+jest.spyOn(toast, 'success');
+jest.spyOn(toast, 'error');
+
+// Mock matchMedia - Add this before any tests are run
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // Deprecated
+    removeListener: jest.fn(), // Deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
 
 // Create a wrapper component that provides all necessary contexts
 const TestWrapper = ({

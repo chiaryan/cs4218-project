@@ -61,12 +61,8 @@ jest.mock('antd', () => {
 // Mock axios for API calls
 jest.mock('axios');
 
-// Mock toast for notifications
-jest.mock('react-hot-toast', () => ({
-  error: jest.fn(),
-  success: jest.fn(),
-  Toaster: () => <div data-testid="mock-toaster" />,
-}));
+jest.spyOn(toast, 'success');
+jest.spyOn(toast, 'error');
 
 // Create a wrapper component that provides all necessary contexts
 const TestWrapper = ({ children }) => (
