@@ -62,6 +62,19 @@ describe("isAdmin middleware test", () => {
     next = jest.fn();
   })
 
+  test("should return 401 if user is not found", async () => {
+    userModel.findById.mockResolvedValue(null);
+
+    await isAdmin(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.send).toHaveBeenCalledWith({
+      success: false,
+      message: "UnAuthorized Access",
+    });
+    expect(next).not.toHaveBeenCalled();
+  });
+
   test("should call next if user is admin", async () => {
     userModel.findById.mockResolvedValue({ role: 1 }); // role 1 is admin
 

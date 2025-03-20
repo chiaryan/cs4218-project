@@ -45,19 +45,22 @@ describe("Register Controller Test", () => {
     };
   });
 
-  xtest("user model is not saved for invalid email", async () => {
+  test("user model is not saved for invalid email", async () => {
     userModel.findOne = jest.fn().mockResolvedValue(null);
     userModel.prototype.save = jest.fn();
     req.body.email = "invalid-email";
 
     await registerController(req, res);
     expect(userModel.prototype.save).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.send).toHaveBeenCalledWith({ message: "Invalid Email" });
   });
 
   test("returns error if name is missing", async () => {
     req.body.name = "";
 
     await registerController(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith({ error: "Name is Required" });
   });
 
@@ -65,6 +68,7 @@ describe("Register Controller Test", () => {
     req.body.email = "";
 
     await registerController(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith({ message: "Email is Required" });
   });
 
@@ -72,6 +76,7 @@ describe("Register Controller Test", () => {
     req.body.password = "";
 
     await registerController(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith({
       message: "Password is Required",
     });
@@ -81,6 +86,7 @@ describe("Register Controller Test", () => {
     req.body.phone = "";
 
     await registerController(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith({
       message: "Phone no is Required",
     });
@@ -90,6 +96,7 @@ describe("Register Controller Test", () => {
     req.body.address = "";
 
     await registerController(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith({
       message: "Address is Required",
     });
@@ -99,6 +106,7 @@ describe("Register Controller Test", () => {
     req.body.answer = "";
 
     await registerController(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith({
       message: "Answer is Required",
     });
@@ -130,7 +138,7 @@ describe("Register Controller Test", () => {
     expect(res.send).toHaveBeenCalledWith({
       success: true,
       message: "User Register Successfully",
-      user: expect.objectContaining(user),
+      user: user,
     });
   });
 
@@ -203,7 +211,7 @@ describe("Login controller test", () => {
     userModel.findOne = jest.fn().mockResolvedValue({ password: "password" });
 
     await loginController(req, res);
-    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith({
       success: false,
       message: "Invalid Password",
@@ -397,6 +405,15 @@ describe("Profile update controller test", () => {
     userModel.findByIdAndUpdate = jest.fn().mockResolvedValue(user);
   });
 
+  test("returns error if user is not found", async () => {
+    userModel.findById = jest.fn().mockResolvedValue(null);
+
+    await updateProfileController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.send).toHaveBeenCalledWith({ message: "User Not Found" });
+  });
+
   test("returns error if password is less than 6 characters", async () => {
     req.body.password = "123";
 
@@ -419,6 +436,27 @@ describe("Profile update controller test", () => {
       updatedUser: expect.objectContaining(user),
     });
   });
+
+  test("returns saved user data if not provided", async () => {
+    let user = { 
+      _id: "123",
+      name: "Khai",
+      email: "user@email.com",
+      phone: "12345678",
+      address: "26 Street",
+    };
+    
+    userModel.findByIdAndUpdate = jest.fn().mockResolvedValue(user);
+    req.body = {_id: "123"};
+
+    await updateProfileController(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith({
+      success: true,
+      message: "Profile Updated SUccessfully",
+      updatedUser: user,
+    });
+  })
 
   test("handles server error", async () => {
     userModel.findById = jest.fn().mockRejectedValue(new Error("Server Error"));
