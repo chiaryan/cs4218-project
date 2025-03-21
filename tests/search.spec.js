@@ -32,8 +32,8 @@ test.describe("Searching for products when not logged in", () => {
     await page.getByRole("searchbox", { name: "Search" }).fill("book");
     await page.getByRole("button", { name: "Search" }).click();
 
-    await expect(page.locator("h1")).toHaveText("Search Results");
-    await expect(page.locator("h6")).toContainText("Found 2");
+    await expect(page.getByText("Search Results")).toBeVisible();
+    await expect(page.getByText("Found 2")).toBeVisible();
   });
 
   test("should return nothing when no products are found", async ({ page }) => {
@@ -48,8 +48,8 @@ test.describe("Searching for products when not logged in", () => {
     await page.getByRole("searchbox", { name: "Search" }).fill("nothing");
     await page.getByRole("button", { name: "Search" }).click();
 
-    await expect(page.locator("h1")).toHaveText("Search Results");
-    await expect(page.locator("h6")).toContainText("No Products Found");
+    await expect(page.getByText("Search Results")).toBeVisible();
+    await expect(page.getByText("No Products Found")).toBeVisible();
   });
 
   test.describe("should return products", () => {
@@ -194,8 +194,8 @@ test.describe("Searching for products as an admin", () => {
     await page.getByRole("searchbox", { name: "Search" }).fill("book");
     await page.getByRole("button", { name: "Search" }).click();
 
-    await expect(page.locator("h1")).toHaveText("Search Results");
-    await expect(page.locator("h6")).toContainText("Found 2");
+    await expect(page.getByText("Search Results")).toBeVisible();
+    await expect(page.getByText("Found 2")).toBeVisible();
   });
 
   test("should return nothing when no products are found", async ({ page }) => {
@@ -207,11 +207,11 @@ test.describe("Searching for products as an admin", () => {
     });
 
     await page.getByRole("searchbox", { name: "Search" }).click();
-    await page.getByRole("searchbox", { name: "Search" }).fill("no products");
+    await page.getByRole("searchbox", { name: "Search" }).fill("nothing");
     await page.getByRole("button", { name: "Search" }).click();
 
-    await expect(page.locator("h1")).toHaveText("Search Results");
-    await expect(page.locator("h6")).toContainText("No Products Found");
+    await expect(page.getByText("Search Results")).toBeVisible();
+    await expect(page.getByText("No Products Found")).toBeVisible();
   });
 
   test.describe("should return products", () => {
@@ -356,8 +356,8 @@ test.describe("Searching for products as a regular user", () => {
     await page.getByRole("searchbox", { name: "Search" }).fill("book");
     await page.getByRole("button", { name: "Search" }).click();
 
-    await expect(page.locator("h1")).toHaveText("Search Results");
-    await expect(page.locator("h6")).toContainText("Found 2");
+    await expect(page.getByText("Search Results")).toBeVisible();
+    await expect(page.getByText("Found 2")).toBeVisible();
   });
 
   test("should return nothing when no products are found", async ({ page }) => {
@@ -369,11 +369,11 @@ test.describe("Searching for products as a regular user", () => {
     });
 
     await page.getByRole("searchbox", { name: "Search" }).click();
-    await page.getByRole("searchbox", { name: "Search" }).fill("no products");
+    await page.getByRole("searchbox", { name: "Search" }).fill("nothing");
     await page.getByRole("button", { name: "Search" }).click();
 
-    await expect(page.locator("h1")).toHaveText("Search Results");
-    await expect(page.locator("h6")).toContainText("No Products Found");
+    await expect(page.getByText("Search Results")).toBeVisible();
+    await expect(page.getByText("No Products Found")).toBeVisible();
   });
 
   test.describe("should return products", () => {
