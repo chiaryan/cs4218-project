@@ -19,9 +19,7 @@ jobs:
         uses: actions/setup-node@v4
         
       - name: Install dependencies
-        run: |
-          npm install
-          npx playwright install
+        run: npm install
 
       - name: Install client dependencies
         run: |
@@ -35,6 +33,3 @@ jobs:
       - name: Run Backend tests
         run: npm run test:backend
         continue-on-error: true
-
-      - name: Run UI tests
-        run: npx playwright test

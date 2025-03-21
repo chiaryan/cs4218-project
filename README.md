@@ -8,7 +8,6 @@ Milestone 1 CI link: https://github.com/cs4218/cs4218-2420-ecom-project-team30/a
 
 ```
 npm install
-npx playwright install
 ```
 
 2. **Install frontend dependencies:**
@@ -38,8 +37,4 @@ npm run test:frontend
 - To run backend tests
 ```
 npm run test:backend
-```
-- To run UI tests
-```
-npx playwright test
 ```
