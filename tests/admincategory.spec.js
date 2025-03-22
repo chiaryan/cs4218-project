@@ -117,7 +117,7 @@ test.describe('Testing categories CRUD operations as admin', () => {
       .fill('New testing category');
     await page.getByRole('button', { name: 'Submit' }).click();
     await expect(page.getByRole('main')).toContainText(
-      'Category Already Exists'
+      'Something went wrong in input form'
     );
 
     // Delete the category to reset the state

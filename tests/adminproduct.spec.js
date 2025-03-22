@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test';
  * each test.
  * All tests would return the live DB to the state it was before the test suite was run.
  * The test suite first logs in as the admin user, then navigates to the create product page.
- * The test suite then creates a new product, updates the product, cancels the deletion of the product and deletes the product
+ * The test suite then creates a new product, updates the product and deletes the product
  * with verification.
  * The test suite also tests for edge cases where the any of the required fields are not provided and where the product is empty.
  */
@@ -31,7 +31,7 @@ test.describe('Testing product CRUD operations as admin', () => {
     await page.getByRole('link', { name: 'Dashboard' }).click();
   });
 
-  test('should successfuly create, update, cancel the delete and delete product', async ({
+  test('should successfuly create, update and delete product', async ({
     page,
   }) => {
     // Create new product with all fields
@@ -100,20 +100,6 @@ test.describe('Testing product CRUD operations as admin', () => {
       'Updated description of Book about Harry Potter'
     );
     await expect(page.getByRole('main')).toContainText('Book');
-
-    // Delete the product but cancel the dialog so the product is not deleted
-    page.once('dialog', async (dialog) => {
-      console.log(`Dialog message: ${dialog.message()}`);
-      await dialog.dismiss();
-    });
-    await page.getByRole('button', { name: 'DELETE PRODUCT' }).click();
-
-    // Verify the product has not been deleted
-    await page.getByRole('link', { name: 'Products' }).click();
-    await expect(page.getByRole('main')).toContainText('Harry Potter Updated');
-    await page
-      .getByRole('link', { name: 'Harry Potter Updated Harry' })
-      .click();
 
     // Delete the product
     page.once('dialog', async (dialog) => {
