@@ -4,7 +4,6 @@ import { useCart } from "../context/cart";
 import { useAuth } from "../context/auth";
 import { useNavigate } from "react-router-dom";
 import DropIn from "braintree-web-drop-in-react";
-import { AiFillWarning } from "react-icons/ai";
 import axios from "axios";
 import toast from "react-hot-toast";
 import "../styles/CartStyles.css";
@@ -33,13 +32,13 @@ const CartPage = () => {
     }
   };
   //detele item
-  const removeCartItem = (pid) => {
+  const removeCartItem = (index) => {
     try {
-      let myCart = [...cart];
-      let index = myCart.findIndex((item) => item._id === pid);
-      myCart.splice(index, 1);
-      setCart(myCart);
-      localStorage.setItem("cart", JSON.stringify(myCart));
+      let newCart = [...cart];
+      // let index = newCart.findIndex((item) => item._id === pid);
+      newCart.splice(index, 1);
+      setCart(newCart);
+      localStorage.setItem("cart", JSON.stringify(newCart));
     } catch (error) {
       console.log(error);
     }
@@ -99,8 +98,8 @@ const CartPage = () => {
         <div className="container ">
           <div className="row ">
             <div className="col-md-7  p-0 m-0">
-              {cart?.map((p) => (
-                <div className="row card flex-row" key={p._id}>
+              {cart?.map((p, index) => (
+                <div className="row card flex-row" key={index}>
                   <div className="col-md-4">
                     <img
                       src={`/api/v1/product/product-photo/${p._id}`}
@@ -108,6 +107,10 @@ const CartPage = () => {
                       alt={p.name}
                       width="100%"
                       height={"130px"}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/images/Virtual.png";
+                      }}
                     />
                   </div>
                   <div className="col-md-4">
@@ -118,7 +121,7 @@ const CartPage = () => {
                   <div className="col-md-4 cart-remove-btn">
                     <button
                       className="btn btn-danger"
-                      onClick={() => removeCartItem(p._id)}
+                      onClick={() => removeCartItem(index)}
                     >
                       Remove
                     </button>
