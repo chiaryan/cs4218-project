@@ -87,11 +87,11 @@ const HomePage = () => {
     setChecked(all);
   };
   useEffect(() => {
-    if (!checked.length || !radio.length) getAllProducts();
+    if (checked.length == 0 && radio.length == 0) getAllProducts();
   }, [checked.length, radio.length]);
 
   useEffect(() => {
-    if (checked.length || radio.length) filterProduct();
+    if (checked.length > 0 || radio.length > 0) filterProduct();
   }, [checked, radio]);
 
   //get filterd product
@@ -158,6 +158,9 @@ const HomePage = () => {
                   src={`/api/v1/product/product-photo/${p._id}`}
                   className="card-img-top"
                   alt={p.name}
+                  onError={(e) => {
+                    e.target.src = "/images/Virtual.png";
+                  }}
                 />
                 <div className="card-body">
                   <div className="card-name-price">
