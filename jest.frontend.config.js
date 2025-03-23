@@ -1,3 +1,4 @@
+/** @type {import('jest').Config} */
 export default {
   // name displayed during tests
   displayName: "frontend",
@@ -34,4 +35,5 @@ export default {
       functions: 100,
     },
   },
+  coverageDirectory: "<rootDir>/client/coverage"
 };
