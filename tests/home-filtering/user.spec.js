@@ -3,7 +3,6 @@ import { test, expect } from '@playwright/test';
 test('Filtering Products', async ({ page }) => {
   await page.routeFromHAR('./tests/home-filtering/hars/filtering/api.har', {
     url: 'http://localhost:3000/api/**',
-    update: true,
   });
 
   await page.goto('http://localhost:3000/');
