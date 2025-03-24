@@ -9,7 +9,7 @@ export const registerController = async (req, res) => {
     const { name, email, password, phone, address, answer } = req.body;
     //validations
     if (!name) {
-      return res.status(400).send({ error: 'Name is Required' });
+      return res.status(400).send({ message: 'Name is Required' });
     }
     if (!email) {
       return res.status(400).send({ message: 'Email is Required' });
@@ -130,13 +130,13 @@ export const forgotPasswordController = async (req, res) => {
   try {
     const { email, answer, newPassword } = req.body;
     if (!email) {
-      res.status(400).send({ message: 'Emai is required' });
+      return res.status(400).send({ message: 'Email is required' });
     }
     if (!answer) {
-      res.status(400).send({ message: 'answer is required' });
+      return res.status(400).send({ message: 'answer is required' });
     }
     if (!newPassword) {
-      res.status(400).send({ message: 'New Password is required' });
+      return res.status(400).send({ message: 'New Password is required' });
     }
     //check
     const user = await userModel.findOne({ email, answer });
@@ -183,7 +183,7 @@ export const updateProfileController = async (req, res) => {
     }
     //password
     if (password && password.length < 6) {
-      return res.json({ error: 'Passsword is required and 6 character long' });
+      return res.status(400).json({ error: 'Passsword is required and 6 character long' });
     }
     const hashedPassword = password ? await hashPassword(password) : undefined;
     const updatedUser = await userModel.findByIdAndUpdate(

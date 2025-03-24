@@ -61,7 +61,7 @@ describe("Register Controller Test", () => {
 
     await registerController(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.send).toHaveBeenCalledWith({ error: "Name is Required" });
+    expect(res.send).toHaveBeenCalledWith({ message: "Name is Required" });
   });
 
   test("returns error if email is missing", async () => {
@@ -287,7 +287,7 @@ describe("Forgot Password Controller Test", () => {
 
     await forgotPasswordController(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.send).toHaveBeenCalledWith({ message: "Emai is required" });
+    expect(res.send).toHaveBeenCalledWith({ message: "Email is required" });
   });
 
   test("returns error if answer is missing", async () => {
