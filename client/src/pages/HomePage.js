@@ -37,10 +37,10 @@ const HomePage = () => {
     getTotal();
   }, []);
   //get products
-  const getAllProducts = async () => {
+  const loadFirstPage = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
+      const { data } = await axios.get(`/api/v1/product/product-list/1`);
       setLoading(false);
       setProducts(data.products);
     } catch (error) {
@@ -69,7 +69,10 @@ const HomePage = () => {
       setLoading(true);
       const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
       setLoading(false);
-      setProducts([...products, ...data?.products]);
+      let newProducts = data?.products.filter(p => !products.find(p2 => p2._id === p._id));
+      if (checked.length > 0) newProducts = newProducts.filter(p => checked.find(c => c._id === p.category));
+      if (radio.length > 0) newProducts = newProducts.filter(p => radio[0] <= p.price && p.price <= radio[1]);
+      setProducts([...products, ...newProducts]);
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -87,7 +90,10 @@ const HomePage = () => {
     setChecked(all);
   };
   useEffect(() => {
-    if (checked.length == 0 && radio.length == 0) getAllProducts();
+    if (checked.length == 0 && radio.length == 0) {
+      loadFirstPage();
+      setPage(1);
+    }
   }, [checked.length, radio.length]);
 
   useEffect(() => {

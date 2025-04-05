@@ -23,21 +23,25 @@ export const createProductController = async (req, res) => {
       req.fields;
     const { photo } = req.files;
     //alidation
-    switch (true) {
-      case !name:
-        return res.status(500).send({ error: "Name is Required" });
-      case !description:
-        return res.status(500).send({ error: "Description is Required" });
-      case !price:
-        return res.status(500).send({ error: "Price is Required" });
-      case !category:
-        return res.status(500).send({ error: "Category is Required" });
-      case !quantity:
-        return res.status(500).send({ error: "Quantity is Required" });
-      case photo && photo.size > 1000000:
-        return res
-          .status(500)
-          .send({ error: "photo is Required and should be less then 1mb" });
+    if (name == undefined || name == null ) {
+      return res.status(500).send({ error: "Name is Required" });
+    }
+    if (description == undefined || description == null ) {
+      return res.status(500).send({ error: "Description is Required" });
+    }
+    if (price == undefined || price == null ) {
+      return res.status(500).send({ error: "Price is Required" });
+    }
+    if (category == undefined || category == null ) {
+      return res.status(500).send({ error: "Category is Required" });
+    }
+    if (quantity == undefined || quantity == null ) {
+      return res.status(500).send({ error: "Quantity is Required" });
+    }
+    if (photo != undefined && photo != null ) {
+      if (photo.size > 1000000) {
+        return res.status(500).send({ error: "photo is Required and should be less then 1mb" });
+      }
     }
 
     const products = new productModel({ ...req.fields, slug: slugify(name) });
@@ -204,7 +208,7 @@ export const productFiltersController = async (req, res) => {
     let args = {};
     if (checked.length > 0) args.category = checked;
     if (radio.length) args.price = { $gte: radio[0], $lte: radio[1] };
-    const products = await productModel.find(args);
+    const products = await productModel.find(args).select('-photo');
     res.status(200).send({
       success: true,
       products,
@@ -315,7 +319,7 @@ export const realtedProductController = async (req, res) => {
 export const productCategoryController = async (req, res) => {
   try {
     const category = await categoryModel.findOne({ slug: req.params.slug });
-    const products = await productModel.find({ category }).populate("category");
+    const products = await productModel.find({ category }).select('-photo').populate("category");
     res.status(200).send({
       success: true,
       category,

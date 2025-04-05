@@ -458,7 +458,7 @@ describe('Product Controllers with DB', () => {
       })
     })
 
-    describe.skip('When a request is made to productPhoto for a product without a photo', () => {
+    describe('When a request is made to productPhoto for a product without a photo', () => {
       const res = {
         status: jest.fn().mockReturnThis(),
         set: jest.fn().mockReturnThis(),
@@ -479,7 +479,7 @@ describe('Product Controllers with DB', () => {
         expect(res.status).toHaveBeenCalledWith(404)
         expect(res.send).toHaveBeenCalledWith({
           success: false,
-          message: 'Phtot not found',
+          message: "No photo found",
         })
       })
     })
